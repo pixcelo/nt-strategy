@@ -9,12 +9,22 @@ class TradingEnv:
         self.current_step = 0
         return self.data[self.current_step]
 
-    def step(self, action):
-        # この部分で報酬と次の状態を計算するロジックを実装
+    def step(self, action): 
         self.current_step += 1
         next_state = self.data[self.current_step]
-        reward = 0  # とりあえず0としますが、実際には適切な報酬を計算する必要があります
         done = self.current_step == len(self.data) - 1
+
+        reward = 0
+
+        # calculate the reward
+        if action == 1: # Buy
+            self.current_position = self.data[self.current_step] # store the buying price
+        elif action == 2 and self.current_position is not None: # Sell
+            reward = self.data[self.current_step] - self.current_position # selling price - buying price
+            self.current_position = None # Reset the buying price
+        else:
+            reward = 0
+
         return next_state, reward, done
 
     def get_state_dim(self):
