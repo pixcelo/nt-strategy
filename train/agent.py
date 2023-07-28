@@ -8,6 +8,8 @@ class Agent:
         self.optimizer = torch.optim.Adam(self.qnetwork.parameters(), lr=lr)
         self.gamma = gamma
         self.epsilon = epsilon
+        self.epsilon_decay = 0.995  # how much to decrease epsilon
+        self.epsilon_min = 0.01  # minimum value for epsilon
         self.action_dim = action_dim
 
     def select_action(self, state):
@@ -33,3 +35,7 @@ class Agent:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+
+    def decay_epsilon(self):
+        self.epsilon = max(0.01, self.epsilon * 0.995)
+
